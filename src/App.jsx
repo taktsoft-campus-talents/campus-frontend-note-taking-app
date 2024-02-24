@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
@@ -10,6 +10,8 @@ function App() {
   const [user, setUser] = useState("sam");
   const [note, setNote] = useState("");
   const [message, setMessage] = useState("");
+  const [noteIdToEdit, setNoteIdToEdit] = useState("");
+  const [updatedNote, setUpdatedNote] = useState("");
 
   useEffect(() => {
     getData();
@@ -43,6 +45,30 @@ function App() {
     setMessage(message);
   }
 
+  function toggleEditMode(noteId, noteToEdit) {
+    noteIdToEdit ? setNoteIdToEdit("") : setNoteIdToEdit(noteId);
+    if (noteToEdit) setUpdatedNote(noteToEdit);
+    else setUpdatedNote("");
+  }
+
+  async function editNote(updatedNote) {
+    setUpdatedNote(updatedNote);
+  }
+
+  async function handleEdit(noteId) {
+    const res = await fetch(`${url}/${user}/${noteId}`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ content: updatedNote }),
+    });
+    const message = await res.json();
+    setMessage(message);
+    toggleEditMode();
+  }
+
   return (
     <>
       <div>
@@ -64,10 +90,30 @@ function App() {
           {data
             ?.sort((a, b) => a.id - b.id)
             .map(({ id, content }) => (
-              <li key={id}>
-                {content}
-                <button onClick={() => deleteNote(id)}>X</button>
-              </li>
+              <Fragment key={id}>
+                {noteIdToEdit === id ? (
+                  <li>
+                    <input
+                      type="text"
+                      value={updatedNote}
+                      onChange={(e) => editNote(e.target.value)}
+                    />
+                    <span>
+                      <button onClick={() => handleEdit(id)}>Save</button>
+                      <button onClick={toggleEditMode}>Cancel</button>
+                    </span>
+                  </li>
+                ) : (
+                  <li>
+                    <span onClick={() => toggleEditMode(id, content)}>
+                      {content}{" "}
+                    </span>
+                    <span>
+                      <button onClick={() => deleteNote(id)}>X</button>
+                    </span>
+                  </li>
+                )}
+              </Fragment>
             ))}
         </ul>
         <div>
