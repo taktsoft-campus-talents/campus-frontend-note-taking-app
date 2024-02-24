@@ -7,16 +7,17 @@ const url = "https://render-express-test-gi1r.onrender.com";
 
 function App() {
   const [data, setData] = useState([]);
+  const [user, setUser] = useState("sam");
 
   useEffect(() => {
     getData();
 
     async function getData() {
-      const res = await fetch(`${url}/sam`);
+      const res = await fetch(`${url}/${user}`);
       const data = await res.json();
       setData(data);
     }
-  }, []);
+  }, [user]);
 
   return (
     <>
@@ -30,6 +31,10 @@ function App() {
       </div>
       <h1>Frontend + Backend</h1>
       <div className="card">
+        <div>
+          <button onClick={() => setUser("eric")}>Eric</button>
+          <button onClick={() => setUser("sam")}>Sam</button>
+        </div>
         <ul>
           notes from the backend:
           {data
