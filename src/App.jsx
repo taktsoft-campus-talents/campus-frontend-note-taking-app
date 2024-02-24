@@ -10,8 +10,8 @@ function App() {
   const [user, setUser] = useState("sam");
   const [note, setNote] = useState("");
   const [message, setMessage] = useState("");
-  const [isEditing, setIsEditing] = useState("");
-  const [updateNote, setUpdateNote] = useState("");
+  const [noteIdToEdit, setNoteIdToEdit] = useState("");
+  const [updatedNote, setUpdatedNote] = useState("");
 
   useEffect(() => {
     getData();
@@ -46,13 +46,13 @@ function App() {
   }
 
   function toggleEditMode(noteId, noteToEdit) {
-    isEditing ? setIsEditing("") : setIsEditing(noteId);
-    if (noteToEdit) setUpdateNote(noteToEdit);
-    else setUpdateNote("");
+    noteIdToEdit ? setNoteIdToEdit("") : setNoteIdToEdit(noteId);
+    if (noteToEdit) setUpdatedNote(noteToEdit);
+    else setUpdatedNote("");
   }
 
   async function editNote(updatedNote) {
-    setUpdateNote(updatedNote);
+    setUpdatedNote(updatedNote);
   }
 
   async function handleEdit(noteId) {
@@ -62,7 +62,7 @@ function App() {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ content: updateNote }),
+      body: JSON.stringify({ content: updatedNote }),
     });
     const message = await res.json();
     setMessage(message);
@@ -91,11 +91,11 @@ function App() {
             ?.sort((a, b) => a.id - b.id)
             .map(({ id, content }) => (
               <Fragment key={id}>
-                {isEditing === id ? (
+                {noteIdToEdit === id ? (
                   <li>
                     <input
                       type="text"
-                      value={updateNote}
+                      value={updatedNote}
                       onChange={(e) => editNote(e.target.value)}
                     />
                     <span>
