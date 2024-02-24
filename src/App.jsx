@@ -9,6 +9,7 @@ function App() {
   const [data, setData] = useState([]);
   const [user, setUser] = useState("sam");
   const [note, setNote] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     getData();
@@ -29,7 +30,8 @@ function App() {
       },
       body: JSON.stringify({ content: note }),
     });
-    await res.json();
+    const message = await res.json();
+    setMessage(message);
     setNote("");
   }
 
@@ -66,6 +68,8 @@ function App() {
             />
             <button type="submit">Add</button>
           </form>
+          <h2>response from the server:</h2>
+          <p>{message}</p>
         </div>
       </div>
     </>
