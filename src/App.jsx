@@ -3,7 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 
-const url = "https://render-express-test-gi1r.onrender.com";
+const url = "https://express-note-taking-app-k3kv.onrender.com"; // new url to backend API (with DELETE route)
 
 function App() {
   const [data, setData] = useState([]);
@@ -35,6 +35,14 @@ function App() {
     setNote("");
   }
 
+  async function deleteNote(noteId) {
+    const res = await fetch(`${url}/${user}/${noteId}`, {
+      method: "DELETE",
+    });
+    const message = await res.json();
+    setMessage(message);
+  }
+
   return (
     <>
       <div>
@@ -56,7 +64,10 @@ function App() {
           {data
             ?.sort((a, b) => a.id - b.id)
             .map(({ id, content }) => (
-              <li key={id}>{content}</li>
+              <li key={id}>
+                {content}
+                <button onClick={() => deleteNote(id)}>X</button>
+              </li>
             ))}
         </ul>
         <div>
