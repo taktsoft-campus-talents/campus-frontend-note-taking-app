@@ -12,6 +12,7 @@ function App() {
   const [message, setMessage] = useState("");
   const [noteIdToEdit, setNoteIdToEdit] = useState("");
   const [updatedNote, setUpdatedNote] = useState("");
+  //const selectedUserId = data[0]?.userId; // derived state (derived from data)
 
   useEffect(() => {
     getData();
@@ -35,6 +36,12 @@ function App() {
     const message = await res.json();
     setMessage(message);
     setNote("");
+
+    // we can't yet update our React state because we don't know the id of the newly created note
+    /* setData([
+      ...data,
+      { id: ???, content: note, name: user, userId: selectedUserId },
+    ]); */
   }
 
   async function deleteNote(noteId) {
@@ -43,6 +50,7 @@ function App() {
     });
     const message = await res.json();
     setMessage(message);
+    setData(data.filter((note) => note.id != noteId));
   }
 
   function toggleEditMode(noteId, noteToEdit) {
@@ -67,6 +75,11 @@ function App() {
     const message = await res.json();
     setMessage(message);
     toggleEditMode();
+    setData(
+      data.map((note) =>
+        note.id == noteId ? { ...note, content: updatedNote } : note
+      )
+    );
   }
 
   return (
