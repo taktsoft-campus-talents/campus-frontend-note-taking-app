@@ -8,6 +8,8 @@ const url = "https://render-express-test-gi1r.onrender.com";
 function App() {
   const [data, setData] = useState([]);
   const [user, setUser] = useState("sam");
+  const [note, setNote] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     getData();
@@ -18,6 +20,20 @@ function App() {
       setData(data);
     }
   }, [user]);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const res = await fetch(`${url}/${user}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ content: note }),
+    });
+    const message = await res.json();
+    setMessage(message);
+    setNote("");
+  }
 
   return (
     <>
@@ -43,6 +59,18 @@ function App() {
               <li key={id}>{content}</li>
             ))}
         </ul>
+        <div>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+            <button type="submit">Add</button>
+          </form>
+          <h2>response from the server:</h2>
+          <p>{message}</p>
+        </div>
       </div>
     </>
   );
