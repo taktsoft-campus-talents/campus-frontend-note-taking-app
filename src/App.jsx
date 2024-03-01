@@ -3,8 +3,6 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 
-const url = "https://express-note-taking-app-k3kv.onrender.com"; // new url to backend API (with DELETE route)
-
 function App() {
   const [data, setData] = useState([]);
   const [user, setUser] = useState("sam");
@@ -12,6 +10,9 @@ function App() {
   const [message, setMessage] = useState("");
   const [noteIdToEdit, setNoteIdToEdit] = useState("");
   const [updatedNote, setUpdatedNote] = useState("");
+  const [url, setUrl] = useState(
+    "https://express-note-taking-app-with-mongoose.onrender.com"
+  );
   const selectedUserId = data[0]?.userId; // derived state (derived from data)
 
   useEffect(() => {
@@ -22,7 +23,7 @@ function App() {
       const data = await res.json();
       setData(data);
     }
-  }, [user]);
+  }, [url, user]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -91,6 +92,23 @@ function App() {
         </a>
       </div>
       <h1>Frontend + Backend</h1>
+      <div>
+        <h2>Choose your backend</h2>
+        <button
+          onClick={() =>
+            setUrl("https://express-note-taking-app-k3kv.onrender.com")
+          }
+        >
+          Postgres
+        </button>
+        <button
+          onClick={() =>
+            setUrl("https://express-note-taking-app-with-mongoose.onrender.com")
+          }
+        >
+          MongoDB
+        </button>
+      </div>
       <div className="card">
         <div>
           <button onClick={() => setUser("eric")}>Eric</button>
